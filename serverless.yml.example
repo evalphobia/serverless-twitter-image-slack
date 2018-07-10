@@ -1,0 +1,28 @@
+service: sls-twitter-image-slack
+
+provider:
+  name: aws
+  region: ap-northeast-1
+  runtime: python3.6
+
+functions:
+  tweet_cat:
+    handler: handler.handler
+    memorySize: 128
+    timeout: 60
+    environment:
+      ######### Change here! ########
+      TWEET_SEARCH_USERS: "@Number10cat,@catsofinstagram"
+      TWEET_SEARCH_SINCE_MIN: 5
+      SLACK_USERNAME: twitter-image-bot
+      SLACK_CHANNEL: general
+      SLACK_WEBHOOK_URL: https://hooks.slack.com/services/XXX/YYY/ZZZ
+    events:
+      - schedule: cron(*/5 * * * ? *)  # exec every 5min
+
+custom:
+  pythonRequirements:
+    dockerizePip: true
+
+plugins:
+  - serverless-python-requirements

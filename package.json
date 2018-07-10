@@ -1,0 +1,25 @@
+{
+  "name": "serverless-twitter-image-slack",
+  "version": "1.0.0",
+  "description": "Search tweet with image from Twitter and post to Slack channel",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "sls deploy -v",
+    "logs": "sls logs -f tweet_cat -t",
+    "invoke": "sls invoke -f tweet_cat --path ./event.json",
+    "local": "sls invoke local -f tweet_cat --path ./event.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/evalphobia/serverless-twitter-image-slack.git"
+  },
+  "author": "evalphobia",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/evalphobia/serverless-twitter-image-slack/issues"
+  },
+  "homepage": "https://github.com/evalphobia/serverless-twitter-image-slack#readme",
+  "dependencies": {
+    "serverless-python-requirements": "^4.1.0"
+  }
+}

@@ -102,3 +102,11 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# node
+node_modules/
+
+# serverless
+serverless.yml
+.serverless
+.requirements/
