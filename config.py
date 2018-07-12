@@ -4,7 +4,19 @@ import os
 def get_search_users():
     if 'TWEET_SEARCH_USERS' in os.environ:
         return os.environ['TWEET_SEARCH_USERS']
-    raise Exception("[ENV Error] you must set 'TWEET_SEARCH_USERS'")
+    return ''
+
+
+def get_search_hashtags():
+    if 'TWEET_SEARCH_HASHTAGS' in os.environ:
+        return os.environ['TWEET_SEARCH_HASHTAGS']
+    return ''
+
+
+def get_search_ignore_words():
+    if 'TWEET_SEARCH_IGNORE_WORDS' in os.environ:
+        return os.environ['TWEET_SEARCH_IGNORE_WORDS']
+    return ''
 
 
 def get_search_since_min():

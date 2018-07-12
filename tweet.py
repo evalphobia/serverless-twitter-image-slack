@@ -19,15 +19,9 @@ DATE_FORMAT = '%Y-%m-%d'
 reURL = re.compile('pic.twitter.com/[^ ]+')
 
 
-def search_by_users_and_datetime(users, dt):
-    user_list = []
-    for u in users.split(','):
-        if u[0] != '@':
-            u = ('@%s' % u)
-        user_list.append(('from:%s' % u.strip()))
-    users_query = ' OR '.join(user_list)
-
-    query = '%s since:%s filter:images' % (users_query, dt.strftime(DATE_FORMAT))
+def search_by_params(dt, users='', hashtags='', ignores=''):
+    target_query = _get_target_query(users, hashtags, ignores)
+    query = '%s since:%s filter:media' % (target_query, dt.strftime(DATE_FORMAT))
     tweets = search(query)
 
     results = []
@@ -37,6 +31,56 @@ def search_by_users_and_datetime(users, dt):
             results.append(tweet)
 
     return results
+
+
+def _get_target_query(users, hashtags, ignores):
+    query = ''
+    user_list = _get_user_list(users)
+    hashtag_list = _get_hashtag_list(hashtags)
+    user_list.extend(hashtag_list)
+    if len(user_list) != 0:
+        query = '(%s)' % ' OR '.join(user_list)
+
+    ignore_list = _get_ignore_list(ignores)
+    if len(ignore_list) != 0:
+        query += ' %s' % ' '.join(ignore_list)
+    return query
+
+
+def _get_user_list(users):
+    user_list = []
+    for u in users.split(','):
+        u = u.strip()
+        if u == '':
+            continue
+        if u[0] != '@':
+            u = ('@%s' % u)
+        user_list.append('from:%s' % u)
+    return user_list
+
+
+def _get_hashtag_list(hashtags):
+    hashtag_list = []
+    for tag in hashtags.split(','):
+        tag = tag.strip()
+        if tag == '':
+            continue
+        if tag[0] != '#':
+            tag = ('#%s' % tag)
+        hashtag_list.append('%s' % tag)
+    return hashtag_list
+
+
+def _get_ignore_list(ignores):
+    ignore_list = []
+    for ignore in ignores.split(','):
+        ignore = ignore.strip()
+        if ignore == '':
+            continue
+        if ignore[0] != '-':
+            ignore = ('-%s' % ignore)
+        ignore_list.append('%s' % ignore)
+    return ignore_list
 
 
 def search(q):
@@ -90,27 +134,32 @@ def get_images(urls):
     """Get image src URL list from Tweet URL list"""
     results = []
     for url in urls:
-        image = _get_image_url_from_tweet(url)
+        soup = _prepare_scraping(url)
+        if _has_video(soup):
+            results.append({'url': url, 'image': None})
+            continue
+
+        image = _get_image_url(soup)
+        logger.info('[tweet._get_image_url_from_tweet] url=[%s], image=[%s]' % (url, image))
         if image:
-            results.append({
-                'url': url,
-                'image': image,
-            })
+            results.append({'url': url, 'image': image})
     logger.info('[tweet.get_images] results: [%s]' % results)
     return results
 
 
-def _get_image_url_from_tweet(url):
-    """Scraping image src URL from tweet URL"""
+def _prepare_scraping(url):
+    """Scraping from tweet URL"""
     resp = requests.get(url)
     try:
         soup = BeautifulSoup(resp.text, 'lxml')
     except FeatureNotFound:
         soup = BeautifulSoup(resp.text, 'html.parser')
+    return soup
 
-    image = _get_image_url(soup)
-    logger.info('[tweet._get_image_url_from_tweet] url=[%s], image=[%s]' % (url, image))
-    return image
+
+def _has_video(soup):
+    """Check video tags"""
+    return soup.select_one('.AdaptiveMedia-video') is not None
 
 
 def _get_image_url(soup):

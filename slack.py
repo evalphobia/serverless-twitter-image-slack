@@ -23,13 +23,14 @@ def send_text_to_slack(tweet):
 def _get_request_params(url, image):
     params = {
         'channel': config.get_slack_channel(),
-        'attachments': [
-            {
-                'text': url,
-                'image_url': image
-            }
-        ]
     }
+
+    if image is None:
+        params['text'] = url
+    else:
+        params['attachments'] = [
+            {'text': url, 'image_url': image}
+        ]
 
     user = config.get_slack_user_name()
     if user is not None:

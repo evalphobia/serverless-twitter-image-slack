@@ -13,6 +13,8 @@ functions:
     environment:
       ######### Change here! ########
       TWEET_SEARCH_USERS: "@Number10cat,@catsofinstagram"
+      TWEET_SEARCH_HASHTAGS: ""
+      TWEET_SEARCH_IGNORE_WORDS: ""
       TWEET_SEARCH_SINCE_MIN: 5
       SLACK_USERNAME: twitter-image-bot
       SLACK_CHANNEL: general

@@ -68,6 +68,8 @@ functions:
 |Name|Description|Default|
 |:--|:--|:--|
 | `TWEET_SEARCH_USERS` | The Twitter username. Put multiple user with comma. | - |
+| `TWEET_SEARCH_HASHTAGS` | The Twitter hashtags. Put multiple hashtags with comma. | - |
+| `TWEET_SEARCH_IGNORE_WORDS` | The words to remove it from search result. Put multiple words with comma. | - |
 | `TWEET_SEARCH_SINCE_MIN` | The threshold time of tweets. | 5 (5min) |
 | `SLACK_USERNAME` | Slack webhook username | (Optional) |
 | `SLACK_CHANNEL` | Slack webhook channel | (Optional) |

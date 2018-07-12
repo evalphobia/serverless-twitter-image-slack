@@ -9,8 +9,10 @@ def handler(event, context):
     """Search twitter and save result."""
     dt = _get_search_datetime()
     users = config.get_search_users()
+    hashtags = config.get_search_hashtags()
+    ignores = config.get_search_ignore_words()
 
-    result = tweet.search_by_users_and_datetime(users, dt)
+    result = tweet.search_by_params(dt, users, hashtags, ignores)
     if len(result) == 0:
         return
 
