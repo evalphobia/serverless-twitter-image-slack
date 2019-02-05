@@ -87,6 +87,7 @@ def search(q):
     result = []
     tweetCriteria = got.manager.TweetCriteria()
     tweetCriteria.querySearch = q
+    tweetCriteria.maxTweets = 99
 
     logger.info('[tweet.search] search: query=[%s]' % q)
 
@@ -136,7 +137,7 @@ def get_images(urls):
     for url in urls:
         soup = _prepare_scraping(url)
         if _has_video(soup):
-            results.append({'url': url, 'image': None})
+            results.append({'url': _get_video_url(soup), 'image': None})
             continue
 
         image = _get_image_url(soup)
@@ -160,6 +161,11 @@ def _prepare_scraping(url):
 def _has_video(soup):
     """Check video tags"""
     return soup.select_one('.AdaptiveMedia-video') is not None
+
+
+def _get_video_url(soup):
+    """Get hyperlink to video"""
+    return soup.select_one('link[rel="canonical"]').get('href').strip()
 
 
 def _get_image_url(soup):
